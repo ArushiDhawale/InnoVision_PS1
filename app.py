@@ -22,311 +22,346 @@ st.set_page_config(
 )
 
 # ─────────────────────────────────────────────────────────────
-# CUSTOM CSS — clean light theme
+# FORCE LIGHT THEME — overrides system dark mode completely
 # ─────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-/* ── Google Fonts ── */
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
+
+/* ── FORCE LIGHT on every Streamlit layer ── */
+html, body,
+[data-testid="stApp"],
+[data-testid="stAppViewContainer"],
+[data-testid="stHeader"],
+[data-testid="stMain"],
+[data-testid="stMainBlockContainer"],
+[data-testid="block-container"],
+section[data-testid="stSidebar"],
+.main, .block-container,
+div[class*="css"] {
+    background-color: #F7F6F2 !important;
+    color: #1A1A18 !important;
+}
 
 /* ── Root palette ── */
 :root {
-    --bg:          #F7F6F2;
-    --surface:     #FFFFFF;
-    --border:      #E5E3DC;
-    --text-primary:#1A1A18;
-    --text-muted:  #6B6B63;
-    --green:       #2D6A4F;
-    --green-light: #E8F4F0;
-    --amber:       #B45309;
-    --amber-light: #FEF3C7;
-    --red:         #9B1C1C;
-    --red-light:   #FEE2E2;
-    --blue:        #1E3A5F;
-    --blue-light:  #DBEAFE;
-    --grey-light:  #F3F4F6;
-    --score-high:  #2D6A4F;
-    --score-mid:   #B45309;
-    --score-low:   #9B1C1C;
+    --bg:           #F7F6F2;
+    --surface:      #FFFFFF;
+    --border:       #E5E3DC;
+    --text-primary: #1A1A18;
+    --text-muted:   #6B6B63;
+    --green:        #2D6A4F;
+    --green-light:  #E8F4F0;
+    --amber:        #B45309;
+    --amber-light:  #FEF3C7;
+    --red:          #9B1C1C;
+    --red-light:    #FEE2E2;
+    --blue:         #1E3A5F;
+    --blue-light:   #DBEAFE;
+    --grey-light:   #F3F4F6;
 }
 
-/* ── Global reset ── */
-html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-    background-color: var(--bg) !important;
-    color: var(--text-primary);
+/* ── Typography ── */
+html, body, p, div, span, label, input, textarea, button {
+    font-family: 'DM Sans', sans-serif !important;
 }
 
-/* ── Hide Streamlit chrome ── */
+/* ── Layout ── */
 #MainMenu, footer, header { visibility: hidden; }
-.block-container { padding: 2.5rem 3rem 4rem; max-width: 1100px; }
-
-/* ── Hero header ── */
-.hero {
-    display: flex;
-    align-items: baseline;
-    gap: 0.6rem;
-    margin-bottom: 0.25rem;
+.block-container {
+    padding: 2.5rem 3rem 4rem !important;
+    max-width: 1100px !important;
 }
+
+/* ── Hero ── */
 .hero-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2.6rem;
-    color: var(--text-primary);
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 2.4rem;
+    color: #1A1A18 !important;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 .hero-badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--green);
-    background: var(--green-light);
-    padding: 0.2rem 0.6rem;
+    color: #2D6A4F;
+    background: #E8F4F0;
+    padding: 0.2rem 0.65rem;
     border-radius: 20px;
-    margin-bottom: 0.15rem;
+    vertical-align: middle;
+    margin-left: 0.4rem;
 }
 .hero-sub {
-    color: var(--text-muted);
+    color: #6B6B63 !important;
     font-size: 0.95rem;
     font-weight: 300;
-    margin-bottom: 2.2rem;
-    margin-top: 0.4rem;
+    margin: 0.4rem 0 2rem;
 }
 
-/* ── Input card ── */
-.input-card {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
+/* ── Cards / surfaces ── */
+.card {
+    background: #FFFFFF !important;
+    border: 1.5px solid #E5E3DC;
     border-radius: 16px;
     padding: 1.8rem 2rem 1.5rem;
-    margin-bottom: 1.8rem;
+    margin-bottom: 1.6rem;
 }
-.input-card-title {
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
+.card-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: #6B6B63;
     margin-bottom: 1rem;
 }
 
 /* ── Score card ── */
 .score-card {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
+    background: #FFFFFF !important;
+    border: 1.5px solid #E5E3DC;
     border-radius: 16px;
     padding: 1.6rem 1.8rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-    height: 100%;
 }
 .score-number {
-    font-family: 'DM Serif Display', serif;
-    font-size: 3.6rem;
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 3.8rem;
     line-height: 1;
+    display: block;
 }
-.score-label {
-    font-size: 0.72rem;
-    font-weight: 600;
+.score-sub {
+    font-size: 0.7rem;
+    font-weight: 700;
     letter-spacing: 0.11em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: #6B6B63;
+    margin-bottom: 0.6rem;
 }
 .verdict-pill {
     display: inline-block;
-    padding: 0.35rem 1rem;
+    padding: 0.35rem 1.1rem;
     border-radius: 50px;
-    font-size: 0.82rem;
-    font-weight: 600;
-    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-top: 0.6rem;
+    letter-spacing: 0.04em;
 }
-.verdict-green  { background: var(--green-light); color: var(--green); }
-.verdict-amber  { background: var(--amber-light); color: var(--amber); }
-.verdict-red    { background: var(--red-light);   color: var(--red);   }
+.pill-green { background: #E8F4F0; color: #2D6A4F; }
+.pill-amber { background: #FEF3C7; color: #B45309; }
+.pill-red   { background: #FEE2E2; color: #9B1C1C; }
 
-/* ── Stat grid ── */
+/* ── Stat chips ── */
 .stat-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.8rem;
-    margin-bottom: 1.8rem;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.75rem;
 }
 .stat-chip {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
+    background: #FFFFFF !important;
+    border: 1.5px solid #E5E3DC;
     border-radius: 12px;
-    padding: 0.9rem 1rem;
+    padding: 0.9rem 0.8rem;
     text-align: center;
 }
-.stat-chip-num {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.8rem;
+.stat-num {
+    font-family: 'DM Serif Display', serif !important;
+    font-size: 2rem;
+    color: #1A1A18;
     display: block;
 }
-.stat-chip-label {
-    font-size: 0.68rem;
-    font-weight: 600;
+.stat-lbl {
+    font-size: 0.65rem;
+    font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: #6B6B63;
+    display: block;
+    margin-top: 0.1rem;
 }
 
-/* ── Brand badges ── */
-.brand-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-bottom: 1.8rem;
-}
+/* ── Brand chips ── */
+.brand-row { display: flex; flex-wrap: wrap; gap: 0.55rem; margin-bottom: 1.4rem; }
 .brand-chip {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 0.85rem;
+    gap: 0.35rem;
+    padding: 0.38rem 0.85rem;
     border-radius: 50px;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     font-weight: 500;
     border: 1.5px solid;
 }
-.brand-chip-ok  { background: var(--green-light); border-color: #A7D5C4; color: var(--green); }
-.brand-chip-bad { background: var(--red-light);   border-color: #FCA5A5; color: var(--red);   }
+.bc-ok  { background: #E8F4F0; border-color: #A7D5C4; color: #2D6A4F; }
+.bc-bad { background: #FEE2E2; border-color: #FCA5A5; color: #9B1C1C; }
 
-/* ── Section label ── */
-.section-label {
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
+/* ── Section divider label ── */
+.sec-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: var(--text-muted);
-    margin: 1.8rem 0 0.8rem;
+    color: #6B6B63;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
+    margin: 1.8rem 0 0.85rem;
 }
-.section-label::after {
+.sec-label::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: var(--border);
+    background: #E5E3DC;
 }
 
-/* ── Sentence row ── */
-.sentence-row {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-left: 4px solid var(--border);
+/* ── Sentence rows ── */
+.s-row {
+    background: #FFFFFF !important;
+    border: 1.5px solid #E5E3DC;
+    border-left: 4px solid #E5E3DC;
     border-radius: 10px;
     padding: 1rem 1.2rem;
-    margin-bottom: 0.6rem;
-    transition: border-color 0.15s;
+    margin-bottom: 0.55rem;
 }
-.sentence-row:hover { border-color: var(--green); }
-.sentence-row-text {
-    font-size: 0.92rem;
-    color: var(--text-primary);
+.s-text {
+    font-size: 0.91rem;
+    color: #1A1A18 !important;
+    line-height: 1.55;
     margin-bottom: 0.5rem;
-    line-height: 1.5;
 }
-.sentence-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-}
-.verdict-tag {
-    font-size: 0.68rem;
+.s-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; }
+.v-tag {
+    font-size: 0.65rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    padding: 0.2rem 0.6rem;
+    padding: 0.18rem 0.55rem;
     border-radius: 4px;
 }
-.reason-text {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-}
-.flagged-word {
-    font-size: 0.72rem;
-    background: var(--amber-light);
-    color: var(--amber);
+.s-reason { font-size: 0.77rem; color: #6B6B63; }
+.flag-word {
+    font-size: 0.7rem;
+    background: #FEF3C7;
+    color: #B45309;
     padding: 0.1rem 0.45rem;
     border-radius: 3px;
-    font-weight: 500;
+    font-weight: 600;
 }
 
-/* ── Verdict colour map ── */
-.v-vague              { background: var(--red-light);   color: var(--red);   border-left-color: var(--red) !important; }
-.v-fake-cert          { background: var(--red-light);   color: var(--red);   border-left-color: #7F1D1D !important; }
-.v-unverified         { background: var(--amber-light); color: var(--amber); border-left-color: var(--amber) !important; }
-.v-future             { background: var(--amber-light); color: var(--amber); border-left-color: #92400E !important; }
-.v-pr                 { background: var(--grey-light);  color: #4B5563;      border-left-color: #9CA3AF !important; }
-.v-backed             { background: var(--green-light); color: var(--green); border-left-color: var(--green) !important; }
-.v-evidence           { background: var(--blue-light);  color: var(--blue);  border-left-color: var(--blue) !important; }
-.v-ignored            { background: var(--grey-light);  color: #9CA3AF;      border-left-color: #D1D5DB !important; }
+/* Verdict left-border + tag colours */
+.vd-vague    { border-left-color: #EF4444 !important; }
+.vd-fake     { border-left-color: #B91C1C !important; }
+.vd-unverif  { border-left-color: #F59E0B !important; }
+.vd-future   { border-left-color: #D97706 !important; }
+.vd-pr       { border-left-color: #9CA3AF !important; }
+.vd-backed   { border-left-color: #2D6A4F !important; }
+.vd-evidence { border-left-color: #1E3A5F !important; }
+.vd-ignored  { border-left-color: #D1D5DB !important; }
 
-/* ── Progress bar override ── */
-.stProgress > div > div > div > div { background-color: var(--green) !important; border-radius: 4px; }
+/* ── Streamlit widget overrides — force light ── */
 
-/* ── Button ── */
-.stButton > button {
-    background: var(--green) !important;
-    color: #fff !important;
+/* Radio */
+[data-testid="stRadio"] > div { background: transparent !important; }
+[data-testid="stRadio"] label {
+    background: #FFFFFF !important;
+    color: #1A1A18 !important;
+    border: 1.5px solid #E5E3DC !important;
+    border-radius: 8px !important;
+    padding: 0.38rem 1rem !important;
+    font-size: 0.85rem !important;
+}
+[data-testid="stRadio"] label:hover { border-color: #2D6A4F !important; }
+
+/* Text area */
+[data-testid="stTextArea"] textarea {
+    background: #FFFFFF !important;
+    color: #1A1A18 !important;
+    border: 1.5px solid #E5E3DC !important;
+    border-radius: 10px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.9rem !important;
+}
+[data-testid="stTextArea"] textarea:focus {
+    border-color: #2D6A4F !important;
+    box-shadow: 0 0 0 3px rgba(45,106,79,0.12) !important;
+}
+[data-testid="stTextArea"] label { color: #6B6B63 !important; }
+
+/* Text input */
+[data-testid="stTextInput"] input {
+    background: #FFFFFF !important;
+    color: #1A1A18 !important;
+    border: 1.5px solid #E5E3DC !important;
+    border-radius: 10px !important;
+}
+[data-testid="stTextInput"] input:focus {
+    border-color: #2D6A4F !important;
+    box-shadow: 0 0 0 3px rgba(45,106,79,0.12) !important;
+}
+[data-testid="stTextInput"] label { color: #6B6B63 !important; }
+
+/* Buttons */
+[data-testid="stButton"] > button {
+    background: #2D6A4F !important;
+    color: #FFFFFF !important;
     border: none !important;
     border-radius: 10px !important;
-    font-family: 'DM Sans', sans-serif !important;
     font-weight: 600 !important;
     font-size: 0.9rem !important;
-    padding: 0.6rem 2.2rem !important;
+    padding: 0.6rem 2rem !important;
     letter-spacing: 0.03em !important;
-    transition: opacity 0.15s !important;
 }
-.stButton > button:hover { opacity: 0.85 !important; }
+[data-testid="stButton"] > button:hover { opacity: 0.85 !important; }
 
-/* ── Radio pills ── */
-.stRadio > div { flex-direction: row; gap: 1rem; }
-.stRadio > div > label {
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    padding: 0.4rem 1.1rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: border-color 0.15s;
-}
-.stRadio > div > label:hover { border-color: var(--green); }
-
-/* ── Text inputs ── */
-.stTextArea textarea, .stTextInput input {
-    border: 1.5px solid var(--border) !important;
+/* Download button */
+[data-testid="stDownloadButton"] > button {
+    background: #FFFFFF !important;
+    color: #2D6A4F !important;
+    border: 1.5px solid #2D6A4F !important;
     border-radius: 10px !important;
-    background: var(--surface) !important;
-    font-family: 'DM Sans', sans-serif !important;
-    font-size: 0.9rem !important;
-}
-.stTextArea textarea:focus, .stTextInput input:focus {
-    border-color: var(--green) !important;
-    box-shadow: 0 0 0 3px rgba(45,106,79,0.1) !important;
-}
-
-/* ── Divider ── */
-hr { border-color: var(--border) !important; margin: 1.6rem 0 !important; }
-
-/* ── Expander ── */
-.streamlit-expanderHeader {
-    background: var(--surface) !important;
-    border-radius: 8px !important;
+    font-weight: 600 !important;
     font-size: 0.85rem !important;
-    font-weight: 500 !important;
 }
+[data-testid="stDownloadButton"] > button:hover { background: #E8F4F0 !important; }
+
+/* Checkbox */
+[data-testid="stCheckbox"] label { color: #1A1A18 !important; font-size: 0.85rem !important; }
+
+/* Progress bar */
+[data-testid="stProgressBar"] > div > div { background: #2D6A4F !important; border-radius: 4px !important; }
+[data-testid="stProgressBar"] { background: #E5E3DC !important; border-radius: 4px !important; }
+
+/* Alerts */
+[data-testid="stAlert"] { background: #FFFFFF !important; border-radius: 10px !important; }
+
+/* Expander */
+[data-testid="stExpander"] {
+    background: #FFFFFF !important;
+    border: 1.5px solid #E5E3DC !important;
+    border-radius: 10px !important;
+}
+[data-testid="stExpander"] summary { color: #1A1A18 !important; font-size: 0.85rem !important; }
+
+/* Divider */
+hr { border-color: #E5E3DC !important; margin: 1.4rem 0 !important; }
+
+/* Metric */
+[data-testid="stMetric"] {
+    background: #FFFFFF !important;
+    border: 1.5px solid #E5E3DC !important;
+    border-radius: 12px !important;
+    padding: 1rem 1.2rem !important;
+}
+[data-testid="stMetricLabel"] { color: #6B6B63 !important; }
+[data-testid="stMetricValue"] { color: #1A1A18 !important; }
 </style>
 """, unsafe_allow_html=True)
 
 
 # ─────────────────────────────────────────────────────────────
-# BACKEND: All logic imported from notebook (re-declared here
-# so the app runs standalone from the same repo folder)
+# BACKEND LOGIC (mirrors notebook — single source of truth)
 # ─────────────────────────────────────────────────────────────
 
 BUZZWORDS = [
@@ -372,12 +407,16 @@ ENVIRONMENTAL_TOPICS = BUZZWORDS + FUTURE_PROMISES + EVIDENCE_KEYWORDS + [
     "climate","environment","ingredients","sourcing","agriculture",
     "forestry","biodiversity","renewable","solar","power","manufacturing",
 ]
-LABELS = ["vague marketing or future promises","specific and verifiable environmental evidence"]
+LABELS = [
+    "vague marketing or future promises",
+    "specific and verifiable environmental evidence",
+]
 
 
 @st.cache_resource(show_spinner="Loading AI model…")
 def load_model():
-    return pipeline("zero-shot-classification", model="cross-encoder/nli-MiniLM2-L6-H768")
+    return pipeline("zero-shot-classification",
+                    model="cross-encoder/nli-MiniLM2-L6-H768")
 
 
 @st.cache_data(show_spinner="Loading certification databases…")
@@ -395,8 +434,6 @@ def load_databases():
         st.error(f"Database file missing: {e}")
         st.stop()
 
-
-# ── Pure logic functions (backend, no UI) ───────────────────
 
 def is_relevant(s):
     lo = s.lower()
@@ -471,8 +508,9 @@ def classify_sentence(s, clf, brand_matches):
         return {"verdict":"Vague","score":0.0,
                 "flagged":bw_list,"reason":"Uses sustainability buzzwords with no proof."}
 
-    res = clf(s, LABELS)
-    label, conf = res["labels"][0], res["scores"][0]
+    res   = clf(s, LABELS)
+    label = res["labels"][0]
+    conf  = res["scores"][0]
     if label == LABELS[1] and conf > 0.6:
         return {"verdict":"Evidence-Based","score":round(conf,2),
                 "flagged":[],"reason":"AI found specific environmental evidence."}
@@ -481,7 +519,7 @@ def classify_sentence(s, clf, brand_matches):
 
 
 def audit(text, clf, bcorp, gots, india):
-    sentences    = [s.strip() for s in re.split(r'[.!?]', text) if len(s.strip()) > 10]
+    sentences     = [s.strip() for s in re.split(r'[.!?]', text) if len(s.strip()) > 10]
     brand_matches = check_brands(text, bcorp, gots, india)
     all_res, valid = [], []
 
@@ -500,7 +538,7 @@ def audit(text, clf, bcorp, gots, india):
         score = round(max(0.0, score - 0.40), 2)
 
     overall = ("Greenwashing Likely" if score < 0.4 else
-               "Uncertain" if score < 0.7 else "Legitimate Claims")
+               "Uncertain"           if score < 0.7 else "Legitimate Claims")
 
     return {"sentences":all_res,"final_score":score,"overall":overall,
             "brand_matches":brand_matches,"total_valid":len(valid)}
@@ -517,40 +555,26 @@ def scrape_url(url):
 
 
 # ─────────────────────────────────────────────────────────────
-# VERDICT STYLING HELPERS
+# VERDICT STYLE MAP
 # ─────────────────────────────────────────────────────────────
 
 VERDICT_META = {
-    "Vague":                      {"icon":"❌","class":"v-vague",     "tag_bg":"#FEE2E2","tag_fg":"#9B1C1C"},
-    "Fake Certification Claim":   {"icon":"🚨","class":"v-fake-cert", "tag_bg":"#FEE2E2","tag_fg":"#7F1D1D"},
-    "Unverified Statistic":       {"icon":"📉","class":"v-unverified","tag_bg":"#FEF3C7","tag_fg":"#B45309"},
-    "Future Promise (Not Evidence)":{"icon":"🗓️","class":"v-future",  "tag_bg":"#FEF3C7","tag_fg":"#92400E"},
-    "Uncertain / PR Speak":       {"icon":"⚠️","class":"v-pr",       "tag_bg":"#F3F4F6","tag_fg":"#4B5563"},
-    "Backed Claim":               {"icon":"✅","class":"v-backed",    "tag_bg":"#E8F4F0","tag_fg":"#2D6A4F"},
-    "Evidence-Based":             {"icon":"📊","class":"v-evidence",  "tag_bg":"#DBEAFE","tag_fg":"#1E3A5F"},
-    "Ignored (Website Noise)":    {"icon":"⚪","class":"v-ignored",   "tag_bg":"#F3F4F6","tag_fg":"#9CA3AF"},
+    "Vague":                        {"icon":"❌","div":"vd-vague",   "tbg":"#FEE2E2","tfg":"#9B1C1C"},
+    "Fake Certification Claim":     {"icon":"🚨","div":"vd-fake",    "tbg":"#FEE2E2","tfg":"#7F1D1D"},
+    "Unverified Statistic":         {"icon":"📉","div":"vd-unverif", "tbg":"#FEF3C7","tfg":"#B45309"},
+    "Future Promise (Not Evidence)":{"icon":"🗓️","div":"vd-future",  "tbg":"#FEF3C7","tfg":"#92400E"},
+    "Uncertain / PR Speak":         {"icon":"⚠️","div":"vd-pr",      "tbg":"#F3F4F6","tfg":"#4B5563"},
+    "Backed Claim":                 {"icon":"✅","div":"vd-backed",   "tbg":"#E8F4F0","tfg":"#2D6A4F"},
+    "Evidence-Based":               {"icon":"📊","div":"vd-evidence", "tbg":"#DBEAFE","tfg":"#1E3A5F"},
+    "Ignored (Website Noise)":      {"icon":"⚪","div":"vd-ignored",  "tbg":"#F3F4F6","tfg":"#9CA3AF"},
 }
 
-def verdict_class(v):
-    return VERDICT_META.get(v, {}).get("class","v-pr")
-
-def verdict_icon(v):
-    return VERDICT_META.get(v, {}).get("icon","ℹ️")
-
-def verdict_tag_html(v):
-    m = VERDICT_META.get(v, {"tag_bg":"#F3F4F6","tag_fg":"#4B5563"})
-    return (f'<span class="verdict-tag" style="background:{m["tag_bg"]};color:{m["tag_fg"]}">'
-            f'{verdict_icon(v)} {v}</span>')
-
 def score_color(s):
-    if s >= 0.7: return "var(--score-high)"
-    if s >= 0.4: return "var(--score-mid)"
-    return "var(--score-low)"
+    return "#2D6A4F" if s >= 0.7 else "#B45309" if s >= 0.4 else "#9B1C1C"
 
-def verdict_pill_class(overall):
-    if overall == "Legitimate Claims": return "verdict-green"
-    if overall == "Uncertain":         return "verdict-amber"
-    return "verdict-red"
+def pill_class(overall):
+    return ("pill-green" if overall == "Legitimate Claims" else
+            "pill-amber" if overall == "Uncertain" else "pill-red")
 
 
 # ─────────────────────────────────────────────────────────────
@@ -558,8 +582,8 @@ def verdict_pill_class(overall):
 # ─────────────────────────────────────────────────────────────
 
 st.markdown("""
-<div class="hero">
-  <span class="hero-title">🌿 Green-Truth Auditor</span>
+<div class="hero-title">
+  🌿 Green-Truth Auditor
   <span class="hero-badge">Beta</span>
 </div>
 <p class="hero-sub">
@@ -571,27 +595,29 @@ st.markdown("""
 # LOAD RESOURCES
 # ─────────────────────────────────────────────────────────────
 
-clf           = load_model()
+clf            = load_model()
 bcorp, gots, india = load_databases()
 
 # ─────────────────────────────────────────────────────────────
 # INPUT CARD
 # ─────────────────────────────────────────────────────────────
 
-st.markdown('<div class="input-card"><div class="input-card-title">Input</div>', unsafe_allow_html=True)
+st.markdown('<div class="card"><div class="card-label">Input</div>', unsafe_allow_html=True)
 
-input_type = st.radio("", ["Paste text", "Enter URL"], horizontal=True, label_visibility="collapsed")
+input_type = st.radio("", ["Paste text", "Enter URL"],
+                      horizontal=True, label_visibility="collapsed")
 
 text = ""
 if input_type == "Paste text":
     text = st.text_area(
-        "Paste claims here",
-        placeholder="e.g. Our jacket is made from 100% recycled ocean plastics, certified by GOTS …",
+        "Claims",
+        placeholder="e.g. Our jacket is made from 100% recycled ocean plastics, certified by GOTS…",
         height=160,
         label_visibility="collapsed",
     )
 else:
-    url = st.text_input("Product / brand URL", placeholder="https://example.com/sustainability")
+    url = st.text_input("Product / brand URL",
+                        placeholder="https://example.com/sustainability")
     if url:
         with st.spinner("Fetching page content…"):
             scraped = scrape_url(url)
@@ -603,14 +629,14 @@ else:
         else:
             st.error("Could not fetch that URL. Try pasting the text directly.")
 
-col_btn, _ = st.columns([1, 4])
-with col_btn:
+btn_col, _ = st.columns([1, 5])
+with btn_col:
     run = st.button("Run Audit ›", use_container_width=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ─────────────────────────────────────────────────────────────
-# AUDIT + RESULTS
+# RESULTS
 # ─────────────────────────────────────────────────────────────
 
 if run:
@@ -621,120 +647,105 @@ if run:
     with st.spinner("Analysing claims…"):
         report = audit(text, clf, bcorp, gots, india)
 
-    # ── Top metrics ─────────────────────────────────────────
-    st.markdown('<div class="section-label">Summary</div>', unsafe_allow_html=True)
+    sc      = report["final_score"]
+    overall = report["overall"]
+
+    # ── Summary ──────────────────────────────────────────────
+    st.markdown('<div class="sec-label">Summary</div>', unsafe_allow_html=True)
 
     col_score, col_stats = st.columns([1, 2], gap="large")
 
     with col_score:
-        sc      = report["final_score"]
-        overall = report["overall"]
-        pill_cls = verdict_pill_class(overall)
+        pclass = pill_class(overall)
         st.markdown(f"""
         <div class="score-card">
-          <span class="score-label">Credibility Score</span>
+          <span class="score-sub">Credibility Score</span>
           <span class="score-number" style="color:{score_color(sc)}">{sc:.0%}</span>
-          <div>
-            <span class="verdict-pill {pill_cls}">{overall}</span>
-          </div>
+          <div><span class="verdict-pill {pclass}">{overall}</span></div>
         </div>
         """, unsafe_allow_html=True)
 
     with col_stats:
         verdicts = [r["verdict"] for r in report["sentences"]]
-        counts = {
-            "Vague / Fake": verdicts.count("Vague") + verdicts.count("Fake Certification Claim"),
-            "Future Promises": verdicts.count("Future Promise (Not Evidence)"),
+        chips = {
+            "Vague / Fake":      verdicts.count("Vague") + verdicts.count("Fake Certification Claim"),
+            "Future Promises":   verdicts.count("Future Promise (Not Evidence)"),
             "Backed / Evidence": verdicts.count("Backed Claim") + verdicts.count("Evidence-Based"),
-            "Uncertain": verdicts.count("Uncertain / PR Speak"),
-            "Unverified Stats": verdicts.count("Unverified Statistic"),
-            "Ignored": verdicts.count("Ignored (Website Noise)"),
+            "Uncertain":         verdicts.count("Uncertain / PR Speak"),
+            "Unverified Stats":  verdicts.count("Unverified Statistic"),
+            "Ignored":           verdicts.count("Ignored (Website Noise)"),
         }
-        html_chips = '<div class="stat-grid">'
-        for label, val in counts.items():
-            html_chips += f"""
-            <div class="stat-chip">
-              <span class="stat-chip-num">{val}</span>
-              <span class="stat-chip-label">{label}</span>
-            </div>"""
-        html_chips += "</div>"
-        st.markdown(html_chips, unsafe_allow_html=True)
-
-    # ── Brand matches ────────────────────────────────────────
-    if report["brand_matches"]:
-        st.markdown('<div class="section-label">Brand Verification</div>', unsafe_allow_html=True)
-        html = '<div class="brand-row">'
-        for m in report["brand_matches"]:
-            if m["certified"]:
-                html += (f'<span class="brand-chip brand-chip-ok">'
-                         f'✅ <strong>{m["brand"]}</strong> · {m["cert_type"]}</span>')
-            else:
-                html += (f'<span class="brand-chip brand-chip-bad">'
-                         f'❌ <strong>{m["brand"]}</strong> · Not certified</span>')
+        html = '<div class="stat-grid">'
+        for lbl, val in chips.items():
+            html += (f'<div class="stat-chip">'
+                     f'<span class="stat-num">{val}</span>'
+                     f'<span class="stat-lbl">{lbl}</span></div>')
         html += "</div>"
         st.markdown(html, unsafe_allow_html=True)
 
-    # ── Progress bar ─────────────────────────────────────────
-    st.progress(report["final_score"])
+    # ── Progress ─────────────────────────────────────────────
+    st.progress(sc)
+
+    # ── Brand verification ───────────────────────────────────
+    if report["brand_matches"]:
+        st.markdown('<div class="sec-label">Brand Verification</div>', unsafe_allow_html=True)
+        html = '<div class="brand-row">'
+        for m in report["brand_matches"]:
+            cls  = "bc-ok"  if m["certified"] else "bc-bad"
+            icon = "✅"     if m["certified"] else "❌"
+            html += (f'<span class="brand-chip {cls}">'
+                     f'{icon} <strong>{m["brand"]}</strong> · {m["cert_type"]}</span>')
+        html += "</div>"
+        st.markdown(html, unsafe_allow_html=True)
 
     # ── Sentence breakdown ───────────────────────────────────
-    st.markdown('<div class="section-label">Sentence-by-Sentence Breakdown</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sec-label">Sentence-by-Sentence Breakdown</div>',
+                unsafe_allow_html=True)
 
-    # Filter controls
-    filter_col, _ = st.columns([2, 3])
-    with filter_col:
-        show_ignored = st.checkbox("Show ignored (non-environmental) sentences", value=False)
+    show_ignored = st.checkbox("Show ignored (non-environmental) sentences", value=False)
 
     for r in report["sentences"]:
         if not show_ignored and r["verdict"] == "Ignored (Website Noise)":
             continue
 
-        vc   = verdict_class(r["verdict"])
-        tag  = verdict_tag_html(r["verdict"])
-
-        flagged_html = ""
-        if r.get("flagged"):
-            flagged_html = " ".join(
-                f'<span class="flagged-word">{w}</span>' for w in r["flagged"]
-            )
+        m    = VERDICT_META.get(r["verdict"], VERDICT_META["Uncertain / PR Speak"])
+        dcls = m["div"]
+        tag  = (f'<span class="v-tag" style="background:{m["tbg"]};color:{m["tfg"]}">'
+                f'{m["icon"]} {r["verdict"]}</span>')
+        flags = " ".join(f'<span class="flag-word">{w}</span>'
+                         for w in r.get("flagged", []))
 
         st.markdown(f"""
-        <div class="sentence-row {vc}">
-          <div class="sentence-meta">{tag}</div>
-          <div class="sentence-row-text" style="margin-top:0.5rem">{r['sentence']}</div>
-          <div class="sentence-meta">
-            <span class="reason-text">{r['reason']}</span>
-            {flagged_html}
-          </div>
+        <div class="s-row {dcls}">
+          <div class="s-text">{r['sentence']}</div>
+          <div class="s-meta">{tag} <span class="s-reason">{r['reason']}</span> {flags}</div>
         </div>
         """, unsafe_allow_html=True)
 
-    # ── Download report ──────────────────────────────────────
-    st.markdown('<div class="section-label">Export</div>', unsafe_allow_html=True)
+    # ── Export ───────────────────────────────────────────────
+    st.markdown('<div class="sec-label">Export</div>', unsafe_allow_html=True)
 
     df_export = pd.DataFrame([
         {"sentence": r["sentence"], "verdict": r["verdict"],
          "score": r["score"], "reason": r["reason"],
-         "flagged_words": ", ".join(r.get("flagged",[]))}
+         "flagged_words": ", ".join(r.get("flagged", []))}
         for r in report["sentences"]
     ])
-    csv_bytes = df_export.to_csv(index=False).encode()
     st.download_button(
         "⬇ Download CSV Report",
-        data=csv_bytes,
+        data=df_export.to_csv(index=False).encode(),
         file_name="green_truth_audit.csv",
         mime="text/csv",
     )
 
 else:
-    # Empty-state illustration
     st.markdown("""
-    <div style="text-align:center;padding:3.5rem 0 2rem;color:#9CA3AF">
+    <div style="text-align:center;padding:4rem 0 2.5rem">
       <div style="font-size:3.5rem;margin-bottom:1rem">🌿</div>
       <div style="font-size:1rem;font-weight:500;color:#6B6B63">
         Enter a sustainability claim above and click <strong>Run Audit</strong>
       </div>
-      <div style="font-size:0.82rem;margin-top:0.4rem">
+      <div style="font-size:0.8rem;margin-top:0.5rem;color:#9CA3AF">
         Powered by cross-encoder/nli-MiniLM2-L6-H768 · B-Corp · GOTS · India Certifications
       </div>
     </div>

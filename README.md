@@ -1,4 +1,4 @@
-# 🌿 Green-Truth Auditor: The Intent-Aware Sustainability Engine
+# Green-Truth Auditor: The Intent-Aware Sustainability Engine
 ### *Combating Greenwashing through Hybrid NLP, Verified Data, and Competitive Analysis*
 
 [![Theme: Responsible Consumption](https://img.shields.io/badge/Theme-Climate%20Action-green)](#)
@@ -6,12 +6,12 @@
 [![Model: BART-MNLI](https://img.shields.io/badge/Model-BART--MNLI-blue)](#)
 [![Status: Live MVP](https://img.shields.io/badge/Status-Hackathon_Prototype-orange)](#)
 
-## 📌 The Challenge: "Marketing Fluff" vs. Reality
+## The Challenge: "Marketing Fluff" vs. Reality
 In the modern market, **"Greenwashing"** creates a massive trust deficit. Brands often use vague marketing buzzwords like *"eco-friendly"* or *"natural"* to mask high-carbon supply chains. The **Green-Truth Auditor** is a transparency tool that uses an **Intent-Aware logic system** to parse product descriptions, extract metadata from URLs, and verify claims against global sustainability databases.
 
 ---
 
-## 🚀 Key Features & Innovations
+##  Key Features & Innovations
 * **🔗 URL Metadata Scraper:** Beyond simple text input, the tool can ingest URLs from major e-commerce platforms, automatically extracting product descriptions for seamless auditing.
 * **⚖️ Competitor Comparison (The Unique Edge):** If a brand scores poorly, the system suggests a verified competitor (e.g., suggesting a B-Corp brand over a fast-fashion brand) to guide ethical purchasing decisions.
 * **📊 Weighted Scoring Dashboard:** A professional UI featuring **Real-time Gauge Charts** that translate complex NLP outputs into an intuitive 0-100 Trust Score.
@@ -20,7 +20,7 @@ In the modern market, **"Greenwashing"** creates a massive trust deficit. Brands
 
 ---
 
-## 📊 Datasets used and Preprocessing
+## Datasets used and Preprocessing
 To provide a "Source of Truth," we integrated three major certification databases:
 1.  **B-Corp Global Directory:** Companies verified for high social and environmental performance.
 2.  **GOTS (Global Organic Textile Standard):** The gold standard for organic fiber processing.
@@ -33,7 +33,7 @@ To provide a "Source of Truth," we integrated three major certification database
 
 ---
 
-## 🤖 Model Used & Performance Metrics
+## Model Used & Performance Metrics
 Our system uses a **Hybrid Architecture** combining a deep-learning transformer model with deterministic environmental logic.
 
 * **Core Model:** `facebook/bart-large-mnli` (Zero-Shot Classification).
@@ -50,7 +50,7 @@ Our system uses a **Hybrid Architecture** combining a deep-learning transformer 
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 * **Frontend:** Streamlit (Visual Dashboards)
 * **NLP:** HuggingFace Transformers (BART-MNLI)
 * **Visuals:** Plotly (Dynamic Gauges & Distribution Charts)
@@ -58,7 +58,7 @@ Our system uses a **Hybrid Architecture** combining a deep-learning transformer 
 
 ---
 
-## 🛤️ Future Scope
+## Future Scope
 * **Browser Extension:** A Chrome plugin to provide real-time trust scores while shopping on Amazon or Flipkart.
 * **Agentic RAG:** Using AI Agents to browse the web for a company’s latest Annual Sustainability Report in real-time.
 * **Mobile App with OCR:** Allowing users to scan physical product barcodes in stores to get an instant sustainability audit.

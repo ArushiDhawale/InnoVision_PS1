@@ -43,7 +43,6 @@ Our system uses a **Hybrid Architecture** combining a deep-learning transformer 
 | Metric | Value | Note |
 | :--- | :--- | :--- |
 | **System Accuracy** | **87.5%** | Measured by correct classification of "Legitimate" vs "Greenwashing" labels. |
-| **Recall** | **1.0 (100%)** | The system successfully flagged every instance of greenwashing in the test set. |
 | **Precision** | **0.80** | Demonstrates high reliability in identifying true evidence without over-penalizing. |
 
 > **Strategic Achievement:** Our **Hybrid Logic Gate** (Logic-based overrides) improved the accuracy from a baseline of 50% (raw NLP) to a final system accuracy of **87.5%**.

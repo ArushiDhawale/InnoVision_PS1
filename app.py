@@ -106,7 +106,7 @@ if st.button("🚀 Run Deep Audit"):
         with comp_col1:
             st.metric("This Brand", f"{final_score}/100", "Current Choice", delta_color="inverse")
         with comp_col2:
-            st.metric(competitors[1]["Brand"], f"{competitors[1]['score']}/100", "GOTS Certified")
+            st.metric(competitors[1]["Brand"], f"{competitors[1]['Score']}/100", "GOTS Certified")
         with comp_col3:
             st.success(f"🌟 *Better Choice:* {competitors[1]['Brand']}")
             st.caption("Lower carbon footprint and verified supply chain.")

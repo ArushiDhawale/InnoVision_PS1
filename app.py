@@ -1,130 +1,173 @@
 import streamlit as st
-import pandas as pd
 import plotly.graph_objects as go
 import requests
 from bs4 import BeautifulSoup
-import time
+import re
 
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="Green-Truth Auditor", layout="wide", page_icon="🌿")
 
-# --- MOCK DATA FOR COMPETITORS (Integrate your CSVs here) ---
-COMPETITOR_DB = {
-    "T-Shirt": [
-        {"Brand": "User Search", "Score": 0, "Cert": "Unknown"},
-        {"Brand": "Patagonia", "Score": 92, "Cert": "B-Corp, GOTS"},
-        {"Brand": "H&M Conscious", "Score": 45, "Cert": "Recycled Content"}
-    ]
-}
+# --- GREENWASHING DICTIONARIES ---
+VAGUE_BUZZWORDS = [
+    "eco-friendly", "eco conscious", "green", "natural", "all-natural",
+    "sustainable", "sustainability", "ethical", "conscious", "planet-friendly",
+    "earth-friendly", "responsible", "clean", "organic", "biodegradable",
+    "carbon neutral", "net zero", "cruelty-free", "good for the planet", "mindful"
+]
+
+EVIDENCE_KEYWORDS = [
+    "b-corp", "bcorp", "gots", "fsc", "oeko-tex", "bluesign", "fair trade", 
+    "carbon trust", "ecocert", "eu ecolabel", "%", "percent", "kg", "tonnes",
+    "third-party", "independently verified", "audited", "certified", "scope 1", "lca"
+]
 
 # --- FUNCTIONS ---
-def draw_gauge(score, title="Sustainability Score"):
+def draw_gauge(score, title="Truth & Transparency Score"):
+    """Draws a Plotly gauge chart."""
     fig = go.Figure(go.Indicator(
         mode = "gauge+number",
         value = score,
         domain = {'x': [0, 1], 'y': [0, 1]},
-        title = {'text': title, 'font': {'size': 18}},
+        title = {'text': title, 'font': {'size': 20}},
         gauge = {
             'axis': {'range': [0, 100]},
-            'bar': {'color': "#2ecc71"},
+            'bar': {'color': "#1E1E1E"},
             'steps': [
-                {'range': [0, 40], 'color': "#ff4b4b"},
-                {'range': [40, 75], 'color': "#ffa500"},
-                {'range': [75, 100], 'color': "#28a745"}]}))
-    fig.update_layout(height=250, margin=dict(l=10, r=10, t=40, b=10))
+                {'range': [0, 40], 'color': "#ff4b4b"},    # Red / High Risk
+                {'range': [40, 75], 'color': "#ffa500"},   # Orange / Mixed
+                {'range': [75, 100], 'color': "#2ecc71"}   # Green / Transparent
+            ]}))
+    fig.update_layout(height=300, margin=dict(l=20, r=20, t=50, b=20))
     return fig
 
 def scrape_url(url):
+    """Scrapes main paragraph text from a URL, spoofing a real browser."""
     try:
-        headers = {'User-Agent': 'Mozilla/5.0'}
+        # Spoofing a standard web browser to bypass basic bot blockers
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept-Language': 'en-US,en;q=0.9',
+        }
         response = requests.get(url, headers=headers, timeout=10)
+        
+        if response.status_code in [403, 401]:
+            return "BLOCKED"
+            
+        response.raise_for_status()
         soup = BeautifulSoup(response.content, 'html.parser')
-        # Extract title and meta description as a fallback for product text
-        title = soup.title.string if soup.title else ""
-        desc = soup.find('meta', attrs={'name': 'description'})
-        desc_text = desc['content'] if desc else ""
-        return f"{title} {desc_text}"
-    except:
+        
+        # Strip out scripts, styles, and footers
+        for tag in soup(["script", "style", "nav", "footer", "header"]):
+            tag.decompose()
+            
+        # Get visible paragraph text
+        paragraphs = soup.find_all(['p', 'li', 'span', 'h2'])
+        text_chunks = [p.get_text(separator=" ", strip=True) for p in paragraphs]
+        
+        # Filter out tiny UI fragments and join
+        valid_text = " ".join([t for t in text_chunks if len(t) > 20])
+        return valid_text[:4000] # Limit to first 4000 characters
+        
+    except Exception as e:
         return None
+
+def analyze_text(text):
+    """Audits text for buzzwords vs. evidence."""
+    text_lower = text.lower()
+    
+    found_buzzwords = set(word for word in VAGUE_BUZZWORDS if word in text_lower)
+    found_evidence = set(word for word in EVIDENCE_KEYWORDS if word in text_lower)
+    
+    # Simple Scoring Logic
+    base_score = 50
+    penalty = len(found_buzzwords) * 15
+    bonus = len(found_evidence) * 25
+    
+    final_score = max(0, min(100, base_score - penalty + bonus))
+    
+    # Split into sentences for detailed breakdown
+    sentences = re.split(r'(?<=[.!?]) +', text)
+    
+    return {
+        "score": final_score,
+        "buzzwords": list(found_buzzwords),
+        "evidence": list(found_evidence),
+        "sentences": sentences
+    }
 
 # --- UI LAYOUT ---
 st.title("🌿 Green-Truth Auditor")
-st.markdown("### The Intent-Aware Sustainability Shopping Assistant")
+st.markdown("Analyze product descriptions for greenwashing using structural logic and keyword verification.")
 
 # --- INPUT SECTION ---
-col_in1, col_in2 = st.columns([2, 1])
+input_mode = st.radio("Choose Input Method:", ["🔗 URL Analyzer", "📝 Text Description"], horizontal=True)
 
-with col_in1:
-    input_mode = st.tabs(["🔗 URL Analyzer", "📝 Text Description"])
-    
-    with input_mode[0]:
-        url_input = st.text_input("Paste Amazon/Flipkart/Brand URL:", placeholder="https://www.example.com/product")
-    
-    with input_mode[1]:
-        text_input = st.text_area("Paste Product Description:", height=150)
-
-with col_in2:
-    st.info("💡 *Innovation:* We don't just find buzzwords; we compare brands to help you find the truly ethical choice.")
-
-if st.button("🚀 Run Deep Audit"):
-    source_text = ""
-    if url_input:
-        with st.spinner("🕷️ Scraping product metadata..."):
+source_text = ""
+if input_mode == "🔗 URL Analyzer":
+    url_input = st.text_input("Paste Brand URL (Note: Amazon/Flipkart may block scrapers):", placeholder="https://www.example.com/product")
+    if st.button("🚀 Run Deep Audit", type="primary") and url_input:
+        with st.spinner("🕷️ Scraping product webpage..."):
             source_text = scrape_url(url_input)
-            if not source_text:
-                st.error("Could not scrape URL. Please paste text manually.")
-    else:
+            if source_text == "BLOCKED":
+                st.error("🚨 This website actively blocks automated scrapers (Common with Amazon). Please copy and paste the text manually.")
+                source_text = ""
+            elif not source_text or len(source_text) < 30:
+                st.error("Could not extract enough readable text from this URL. Please paste text manually.")
+                source_text = ""
+
+elif input_mode == "📝 Text Description":
+    text_input = st.text_area("Paste Product Description:", height=150, placeholder="Our products are 100% eco-friendly and good for the planet...")
+    if st.button("🚀 Run Deep Audit", type="primary") and text_input:
         source_text = text_input
 
-    if source_text:
-        # --- LOGIC SIMULATION (Connect your model variables here) ---
-        # Calculation: Base 100 -> -30 (Buzzwords) -> -40 (No Cert) -> +10 (Evidence)
-        final_score = 32 
+# --- RESULTS SECTION ---
+if source_text:
+    st.divider()
+    
+    # Run the audit
+    audit_results = analyze_text(source_text)
+    score = audit_results["score"]
+    
+    c1, c2 = st.columns([1, 1.5])
+    
+    with c1:
+        st.plotly_chart(draw_gauge(score), width="stretch")
         
-        # --- 1. GAUGE & VERDICT ---
-        c1, c2 = st.columns([1, 2])
-        with c1:
-            st.plotly_chart(draw_gauge(final_score), use_container_width=True)
-        with c2:
-            st.subheader("⚠️ Likely Greenwashing")
-            st.markdown(f"""
-            *Reasoning Breakdown:*
-            * 🚩 *Buzzword Penalty (-30):* Uses "eco-friendly" and "natural" without context.
-            * 🚩 *Certification Gap (-40):* Brand not found in B-Corp or GOTS database.
-            * ✅ *Data Credit (+10):* Mentions 'Organic Cotton' (Self-claimed).
-            """)
+    with c2:
+        if score >= 75:
+            st.success("### ✅ Evidence-Based Claim")
+            st.write("This product relies on verifiable data and certifications rather than marketing fluff.")
+        elif score >= 40:
+            st.warning("### ⚠️ Partial Greenwashing")
+            st.write("This description contains some valid claims, but relies heavily on vague environmental buzzwords.")
+        else:
+            st.error("### ❌ High Greenwashing Risk")
+            st.write("This product uses deceptive or highly vague marketing terms with zero measurable proof or certifications.")
+            
+        st.markdown("**Findings:**")
+        if audit_results["buzzwords"]:
+            st.markdown(f"🚩 **Vague Buzzwords found:** `{', '.join(audit_results['buzzwords'])}`")
+        if audit_results["evidence"]:
+            st.markdown(f"✅ **Verifiable Evidence found:** `{', '.join(audit_results['evidence'])}`")
+        if not audit_results["evidence"] and not audit_results["buzzwords"]:
+            st.markdown("ℹ️ No specific environmental claims detected in this text.")
 
-        st.divider()
+    st.divider()
 
-        # --- 2. COMPETITOR COMPARISON (THE UNIQUE EDGE) ---
-        st.subheader("⚖️ How it Compares")
-        comp_col1, comp_col2, comp_col3 = st.columns(3)
+    # --- DETAILED BREAKDOWN ---
+    st.subheader("🕵️ Detailed Sentence Breakdown")
+    
+    for sentence in audit_results["sentences"]:
+        if len(sentence) < 15: continue
         
-        # Simulating a comparison for a "T-Shirt" category
-        competitors = COMPETITOR_DB["T-Shirt"]
+        s_lower = sentence.lower()
+        has_buzz = any(b in s_lower for b in VAGUE_BUZZWORDS)
+        has_evid = any(e in s_lower for e in EVIDENCE_KEYWORDS)
         
-        with comp_col1:
-            st.metric("This Brand", f"{final_score}/100", "Current Choice", delta_color="inverse")
-        with comp_col2:
-            st.metric(competitors[1]["Brand"], f"{competitors[1]['Score']}/100", "GOTS Certified")
-        with comp_col3:
-            st.success(f"🌟 *Better Choice:* {competitors[1]['Brand']}")
-            st.caption("Lower carbon footprint and verified supply chain.")
-
-        # --- 3. ANNOTATED TEXT ---
-        st.subheader("🕵️ Detailed Audit Trail")
-        st.expander("Show Analyzed Text").write(source_text)
-        
-        # Visual cues for text analysis
-        st.markdown("""
-        <div style="background:#fff3cd; padding:10px; border-left:5px solid #ffa500;">
-        <b>Flagged Segment:</b> "...our 100% natural and eco-friendly process..." <br>
-        <i>Critique: No specific metric provided for 'natural'.</i>
-        </div>
-        """, unsafe_allow_html=True)
-
-# --- SIDEBAR FOOTER ---
-st.sidebar.markdown("---")
-st.sidebar.write("✅ *B-Corp Database:* Synced")
-st.sidebar.write("✅ *GOTS Database:* Synced")
-st.sidebar.write("🤖 *Model:* BART-MNLI (87.5% Acc)")
+        if has_evid:
+            with st.expander(f"✅ **PASS:** {sentence[:80]}..."):
+                st.write(f"**Full Sentence:** {sentence}")
+        elif has_buzz and not has_evid:
+            with st.expander(f"❌ **FAIL:** {sentence[:80]}..."):
+                st.write(f"**Full Sentence:** {sentence}")
+                st.error("Contains vague buzzwords with no supporting evidence.")
